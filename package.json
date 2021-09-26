@@ -12,19 +12,18 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
+    "test": "ts-node src/test.ts",
     "prepublishOnly": "tsc"
   },
   "devDependencies": {
     "@types/node": "^16.10.1",
     "gts": "^3.1.0",
+    "ts-node": "^10.2.1",
     "typescript": "^4.4.3",
     "yarn-upgrade-all": "^0.5.4"
   },
   "files": [
     "build",
     "prebuilds"
-  ],
-  "dependencies": {
-    "node-window-manager": "^2.2.4"
-  }
+  ]
 }
