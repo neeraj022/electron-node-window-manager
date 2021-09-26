@@ -3,7 +3,7 @@ import {IMonitorInfo, IRectangle} from '../interfaces';
 import {release} from 'os';
 
 const getMonitorInfo = (id: number): IMonitorInfo => {
-  if (!addon || !addon.getMonitorInfo) return;
+  if (!addon || !addon.getMonitorInfo) return {id: -1};
   return addon.getMonitorInfo(id);
 };
 
@@ -15,19 +15,19 @@ export class Monitor {
   }
 
   getBounds(): IRectangle {
-    return getMonitorInfo(this.id).bounds;
+    return getMonitorInfo(this.id).bounds!;
   }
 
   getWorkArea(): IRectangle {
-    return getMonitorInfo(this.id).workArea;
+    return getMonitorInfo(this.id).workArea!;
   }
 
   isPrimary(): boolean {
-    return getMonitorInfo(this.id).isPrimary;
+    return getMonitorInfo(this.id).isPrimary!;
   }
 
   getScaleFactor(): number {
-    if (!addon || !addon.getMonitorScaleFactor) return;
+    if (!addon || !addon.getMonitorScaleFactor) return -1;
 
     const numbers = release()
       .split('.')
@@ -41,6 +41,6 @@ export class Monitor {
   }
 
   isValid(): boolean {
-    return addon && addon.getMonitorInfo;
+    return addon && addon.getMonitorInfo !== undefined;
   }
 }

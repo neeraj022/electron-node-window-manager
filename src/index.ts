@@ -2,8 +2,9 @@ import {Window} from './classes/window';
 import {EventEmitter} from 'events';
 import {Monitor} from './classes/monitor';
 import {EmptyMonitor} from './classes/empty-monitor';
+import {IAddOn} from './interfaces';
 
-let addon: any;
+let addon: IAddOn;
 switch (process.platform) {
   case 'darwin': {
     addon = require('../prebuilds/macOS/addon.node');
@@ -18,7 +19,7 @@ switch (process.platform) {
   }
 }
 
-let interval: any = null;
+let interval: NodeJS.Timer;
 
 let registeredEvents: string[] = [];
 
@@ -78,25 +79,25 @@ class WindowManager extends EventEmitter {
     if (!addon || !addon.getWindows) return [];
     return addon
       .getWindows()
-      .map((win: any) => new Window(win))
+      .map((win: number) => new Window(win))
       .filter((x: Window) => x.isWindow());
   };
 
   getMonitors = (): Monitor[] => {
     if (!addon || !addon.getMonitors) return [];
-    return addon.getMonitors().map((mon: any) => new Monitor(mon));
+    return addon.getMonitors().map((mon: number) => new Monitor(mon));
   };
 
   getPrimaryMonitor = (): Monitor | EmptyMonitor => {
     if (process.platform === 'win32') {
-      return this.getMonitors().find(x => x.isPrimary);
+      return this.getMonitors().find(x => x.isPrimary)!;
     } else {
       return new EmptyMonitor();
     }
   };
 
   createProcess = (path: string, cmd = ''): number => {
-    if (!addon || !addon.createProcess) return;
+    if (!addon || !addon.createProcess) return -1;
     return addon.createProcess(path, cmd);
   };
 }

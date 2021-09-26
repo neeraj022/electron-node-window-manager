@@ -4,10 +4,10 @@ import {IRectangle} from '../interfaces';
 import {EmptyMonitor} from './empty-monitor';
 
 export class Window {
-  public id: number;
+  public id!: number;
 
-  public processId: number;
-  public path: string;
+  public processId!: number;
+  public path!: string;
 
   constructor(id: number) {
     if (!addon) return;
@@ -19,7 +19,7 @@ export class Window {
   }
 
   getBounds(): IRectangle {
-    if (!addon) return;
+    if (!addon) return {};
 
     const bounds = addon.getWindowBounds(this.id);
 
@@ -43,10 +43,10 @@ export class Window {
     if (process.platform === 'win32') {
       const sf = this.getMonitor().getScaleFactor();
 
-      newBounds.x = Math.floor(newBounds.x * sf);
-      newBounds.y = Math.floor(newBounds.y * sf);
-      newBounds.width = Math.floor(newBounds.width * sf);
-      newBounds.height = Math.floor(newBounds.height * sf);
+      newBounds.x = Math.floor(newBounds.x! * sf);
+      newBounds.y = Math.floor(newBounds.y! * sf);
+      newBounds.width = Math.floor(newBounds.width! * sf);
+      newBounds.height = Math.floor(newBounds.height! * sf);
 
       addon.setWindowBounds(this.id, newBounds);
     } else if (process.platform === 'darwin') {
@@ -55,7 +55,7 @@ export class Window {
   }
 
   getTitle(): string {
-    if (!addon) return;
+    if (!addon) return '';
     return addon.getWindowTitle(this.id);
   }
 
@@ -120,13 +120,16 @@ export class Window {
   }
 
   isWindow(): boolean {
-    if (!addon) return;
+    if (!addon) return false;
 
     if (process.platform === 'win32') {
       return this.path && this.path !== '' && addon.isWindow(this.id);
     } else if (process.platform === 'darwin') {
-      return this.path && this.path !== '' && !!addon.initWindow(this.id);
+      return (this.path &&
+        this.path !== '' &&
+        !!addon.initWindow(this.id)) as boolean;
     }
+    return false;
   }
 
   isVisible(): boolean {
