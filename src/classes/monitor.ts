@@ -1,11 +1,11 @@
-import { addon } from "..";
-import { IMonitorInfo, IRectangle } from "../interfaces";
-import { release } from "os";
+import {addon} from '..';
+import {IMonitorInfo, IRectangle} from '../interfaces';
+import {release} from 'os';
 
 const getMonitorInfo = (id: number): IMonitorInfo => {
   if (!addon || !addon.getMonitorInfo) return;
   return addon.getMonitorInfo(id);
-}
+};
 
 export class Monitor {
   public id: number;
@@ -30,7 +30,7 @@ export class Monitor {
     if (!addon || !addon.getMonitorScaleFactor) return;
 
     const numbers = release()
-      .split(".")
+      .split('.')
       .map(d => parseInt(d, 10));
 
     if (numbers[0] > 8 || (numbers[0] === 8 && numbers[1] >= 1)) {
@@ -38,7 +38,7 @@ export class Monitor {
     }
 
     return 1;
-  };
+  }
 
   isValid(): boolean {
     return addon && addon.getMonitorInfo;

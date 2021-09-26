@@ -1,12 +1,12 @@
-import { IRectangle } from "../interfaces";
+import {IRectangle} from '../interfaces';
 
 export class EmptyMonitor {
   getBounds(): IRectangle {
-    return { x: 0, y: 0, width: 0, height: 0 };
+    return {x: 0, y: 0, width: 0, height: 0};
   }
 
   getWorkArea(): IRectangle {
-    return { x: 0, y: 0, width: 0, height: 0 };
+    return {x: 0, y: 0, width: 0, height: 0};
   }
 
   isPrimary(): boolean {
@@ -15,7 +15,7 @@ export class EmptyMonitor {
 
   getScaleFactor(): number {
     return 1;
-  };
+  }
 
   isValid(): boolean {
     return false;

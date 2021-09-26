@@ -1,8 +1,7 @@
-import { addon } from "..";
-import extractFileIcon from "extract-file-icon";
-import { Monitor } from "./monitor";
-import { IRectangle } from "../interfaces";
-import { EmptyMonitor } from "./empty-monitor";
+import {addon} from '..';
+import {Monitor} from './monitor';
+import {IRectangle} from '../interfaces';
+import {EmptyMonitor} from './empty-monitor';
 
 export class Window {
   public id: number;
@@ -14,7 +13,7 @@ export class Window {
     if (!addon) return;
 
     this.id = id;
-    const { processId, path } = addon.initWindow(id);
+    const {processId, path} = addon.initWindow(id);
     this.processId = processId;
     this.path = path;
   }
@@ -24,7 +23,7 @@ export class Window {
 
     const bounds = addon.getWindowBounds(this.id);
 
-    if (process.platform === "win32") {
+    if (process.platform === 'win32') {
       const sf = this.getMonitor().getScaleFactor();
 
       bounds.x = Math.floor(bounds.x / sf);
@@ -39,9 +38,9 @@ export class Window {
   setBounds(bounds: IRectangle) {
     if (!addon) return;
 
-    const newBounds = { ...this.getBounds(), ...bounds };
+    const newBounds = {...this.getBounds(), ...bounds};
 
-    if (process.platform === "win32") {
+    if (process.platform === 'win32') {
       const sf = this.getMonitor().getScaleFactor();
 
       newBounds.x = Math.floor(newBounds.x * sf);
@@ -50,7 +49,7 @@ export class Window {
       newBounds.height = Math.floor(newBounds.height * sf);
 
       addon.setWindowBounds(this.id, newBounds);
-    } else if (process.platform === "darwin") {
+    } else if (process.platform === 'darwin') {
       addon.setWindowBounds(this.id, newBounds);
     }
   }
@@ -67,20 +66,20 @@ export class Window {
 
   show() {
     if (!addon || !addon.showWindow) return;
-    addon.showWindow(this.id, "show");
+    addon.showWindow(this.id, 'show');
   }
 
   hide() {
     if (!addon || !addon.showWindow) return;
-    addon.showWindow(this.id, "hide");
+    addon.showWindow(this.id, 'hide');
   }
 
   minimize() {
     if (!addon) return;
 
-    if (process.platform === "win32") {
-      addon.showWindow(this.id, "minimize");
-    } else if (process.platform === "darwin") {
+    if (process.platform === 'win32') {
+      addon.showWindow(this.id, 'minimize');
+    } else if (process.platform === 'darwin') {
       addon.setWindowMinimized(this.id, true);
     }
   }
@@ -88,9 +87,9 @@ export class Window {
   restore() {
     if (!addon) return;
 
-    if (process.platform === "win32") {
-      addon.showWindow(this.id, "restore");
-    } else if (process.platform === "darwin") {
+    if (process.platform === 'win32') {
+      addon.showWindow(this.id, 'restore');
+    } else if (process.platform === 'darwin') {
       addon.setWindowMinimized(this.id, false);
     }
   }
@@ -98,9 +97,9 @@ export class Window {
   maximize() {
     if (!addon) return;
 
-    if (process.platform === "win32") {
-      addon.showWindow(this.id, "maximize");
-    } else if (process.platform === "darwin") {
+    if (process.platform === 'win32') {
+      addon.showWindow(this.id, 'maximize');
+    } else if (process.platform === 'darwin') {
       addon.setWindowMaximized(this.id);
     }
   }
@@ -108,7 +107,7 @@ export class Window {
   bringToTop() {
     if (!addon) return;
 
-    if (process.platform === "darwin") {
+    if (process.platform === 'darwin') {
       addon.bringWindowToTop(this.id, this.processId);
     } else {
       addon.bringWindowToTop(this.id);
@@ -123,10 +122,10 @@ export class Window {
   isWindow(): boolean {
     if (!addon) return;
 
-    if (process.platform === "win32") {
-      return this.path && this.path !== "" && addon.isWindow(this.id);
-    } else if (process.platform === "darwin") {
-      return this.path && this.path !== "" && !!addon.initWindow(this.id);
+    if (process.platform === 'win32') {
+      return this.path && this.path !== '' && addon.isWindow(this.id);
+    } else if (process.platform === 'darwin') {
+      return this.path && this.path !== '' && !!addon.initWindow(this.id);
     }
   }
 
@@ -148,10 +147,6 @@ export class Window {
   getOpacity() {
     if (!addon || !addon.getWindowOpacity) return 1;
     return addon.getWindowOpacity(this.id);
-  }
-
-  getIcon(size: 16 | 32 | 64 | 256 = 64) {
-    return extractFileIcon(this.path, size);
   }
 
   setOwner(window: Window | null | number) {

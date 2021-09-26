@@ -1,15 +1,21 @@
-import { Window } from "./classes/window";
-import { EventEmitter } from "events";
-import { platform } from "os";
-import { Monitor } from "./classes/monitor";
-import { EmptyMonitor } from "./classes/empty-monitor";
-import { resolve } from 'path';
+import {Window} from './classes/window';
+import {EventEmitter} from 'events';
+import {Monitor} from './classes/monitor';
+import {EmptyMonitor} from './classes/empty-monitor';
 
 let addon: any;
-
-if (platform() === "win32" || platform() === "darwin") {
-  const ADDON_PATH = (process.env.NODE_ENV != "dev") ? "Release" : "Debug";
-  addon = require(`node-gyp-build`)(resolve(__dirname, '..'));
+switch (process.platform) {
+  case 'darwin': {
+    addon = require('../prebuilds/macOS/addon.node');
+    break;
+  }
+  case 'win32': {
+    addon = require('../prebuilds/windows/addon.node');
+    break;
+  }
+  default: {
+    throw new Error(`Unsupported platform ${process.platform}`);
+  }
 }
 
 let interval: any = null;
@@ -24,20 +30,20 @@ class WindowManager extends EventEmitter {
 
     if (!addon) return;
 
-    this.on("newListener", event => {
+    this.on('newListener', event => {
       if (event === 'window-activated') {
         lastId = addon.getActiveWindow();
       }
 
       if (registeredEvents.indexOf(event) !== -1) return;
 
-      if (event === "window-activated") {
+      if (event === 'window-activated') {
         interval = setInterval(async () => {
           const win = addon.getActiveWindow();
-          
+
           if (lastId !== win) {
             lastId = win;
-            this.emit("window-activated", new Window(win));
+            this.emit('window-activated', new Window(win));
           }
         }, 50);
       } else {
@@ -47,10 +53,10 @@ class WindowManager extends EventEmitter {
       registeredEvents.push(event);
     });
 
-    this.on("removeListener", event => {
+    this.on('removeListener', event => {
       if (this.listenerCount(event) > 0) return;
 
-      if (event === "window-activated") {
+      if (event === 'window-activated') {
         clearInterval(interval);
       }
 
@@ -61,7 +67,7 @@ class WindowManager extends EventEmitter {
   requestAccessibility = () => {
     if (!addon || !addon.requestAccessibility) return true;
     return addon.requestAccessibility();
-  }
+  };
 
   getActiveWindow = () => {
     if (!addon) return;
@@ -70,7 +76,10 @@ class WindowManager extends EventEmitter {
 
   getWindows = (): Window[] => {
     if (!addon || !addon.getWindows) return [];
-    return addon.getWindows().map((win: any) => new Window(win)).filter((x: Window) => x.isWindow());
+    return addon
+      .getWindows()
+      .map((win: any) => new Window(win))
+      .filter((x: Window) => x.isWindow());
   };
 
   getMonitors = (): Monitor[] => {
@@ -84,9 +93,9 @@ class WindowManager extends EventEmitter {
     } else {
       return new EmptyMonitor();
     }
-  }
+  };
 
-  createProcess = (path: string, cmd = ""): number => {
+  createProcess = (path: string, cmd = ''): number => {
     if (!addon || !addon.createProcess) return;
     return addon.createProcess(path, cmd);
   };
@@ -94,4 +103,4 @@ class WindowManager extends EventEmitter {
 
 const windowManager = new WindowManager();
 
-export { windowManager, Window, addon };
+export {windowManager, Window, addon};
