@@ -84,6 +84,16 @@ export class Window {
     }
   }
 
+  exitFullScreen() {
+    if (!addon) return;
+
+    if (process.platform === "win32") {
+      addon.showWindow(this.id, "minimize");
+    } else if (process.platform === "darwin") {
+      addon.exitFullScreen(this.id);
+    }
+  }
+
   restore() {
     if (!addon) return;
 
