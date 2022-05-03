@@ -37,4 +37,5 @@ export interface IAddOn {
   getWindowOwner: Function;
   getMonitorInfo: Function;
   getMonitorScaleFactor: Function;
+  exitFullScreen: Function;
 }
