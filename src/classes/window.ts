@@ -88,7 +88,7 @@ export class Window {
     if (!addon) return;
 
     if (process.platform === "win32") {
-      addon.showWindow(this.id, "minimize");
+      addon.showWindow(this.id, "restore");
     } else if (process.platform === "darwin") {
       addon.exitFullScreen(this.id);
     }
